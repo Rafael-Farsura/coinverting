@@ -1,0 +1,6 @@
+@baseURL = http://localhost:3000
+
+#### Currency Controller
+# @name Coinverting-CurrencyController
+
+GET {{baseURL}}/currency/USD/BRL
