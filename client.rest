@@ -1,17 +1,29 @@
 @baseURL = http://localhost:3000
 
-### Teste de Conversão de Moeda
-# @name Coinverting-CurrencyController
-GET {{baseURL}}/currency/convert?from=USD&to=BRL&amount=5
 
-### Teste de Adição de Moeda
-POST {{baseURL}}/currency/add HTTP/1.1
+#### Currency Controller
+# @name Coinverting-Converting
+GET {{baseURL}}/currency/convert?from=BTC&to=USD&amount=1
+Accept: application/json
+
+
+### @name GetAllSupported
+GET {{baseURL}}/currency/
+Accept: application/application/json
+
+### @name AddCurrency
+POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "code": "EUR",
-  "exchangeRate": 0.85
+  "currency": "HURB"
 }
 
-### Teste de Remoção de Moeda
-DELETE http://localhost:3000/currency/remove?code=EUR HTTP/1.1
+
+### @name DeleteCurrency
+DELETE {{baseURL}}/currency/remove
+Content-Type: application/json
+
+{
+  "currency": "HURB"
+}
