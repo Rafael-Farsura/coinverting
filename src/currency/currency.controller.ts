@@ -5,8 +5,8 @@ import { CurrencyService } from './currency.service';
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
-  @Get(':from/:target')
-  async getPrice(@Param('from') from: string, @Param('target') target) {
-    return this.currencyService.getCurrencyPrice(from, target);
+  @Get(':from-:target')
+  async convert(@Param('from') from: string, @Param('target') target) {
+    return this.currencyService.convert(from, target);
   }
 }

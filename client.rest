@@ -1,0 +1,17 @@
+@baseURL = http://localhost:3000
+
+### Teste de Conversão de Moeda
+# @name Coinverting-CurrencyController
+GET {{baseURL}}/currency/convert?from=USD&to=BRL&amount=5
+
+### Teste de Adição de Moeda
+POST {{baseURL}}/currency/add HTTP/1.1
+Content-Type: application/json
+
+{
+  "code": "EUR",
+  "exchangeRate": 0.85
+}
+
+### Teste de Remoção de Moeda
+DELETE http://localhost:3000/currency/remove?code=EUR HTTP/1.1
