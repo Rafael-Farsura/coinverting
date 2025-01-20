@@ -3,7 +3,7 @@
 
 #### Currency Controller
 # @name Coinverting-Converting
-GET {{baseURL}}/currency/convert?from=BTC&to=USD&amount=1
+GET {{baseURL}}/currency/convert?from=DIU&to=USD&amount=1
 Accept: application/json
 
 
@@ -16,7 +16,7 @@ POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "currency": "HURB"
+  "currency": "DIU"
 }
 
 

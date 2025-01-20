@@ -11,21 +11,35 @@ export class CurrencyController {
     @Query('to') to: string,
     @Query('amount') amount: number,
   ) {
-    return this.currencyService.convert(from, to, amount);
+    try {
+      const result = await this.currencyService.convert(from, to, amount);
+
+      return result;
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 
   @Post('add')
   async addCurrency(@Body('currency') currency: string) {
-    this.currencyService.addCurrency(currency);
+    try {
+      await this.currencyService.addCurrency(currency);
 
-    return { message: `${currency} added successfully` };
+      return { message: `${currency} added successfully` };
+    } catch (error) {
+      return { message: error.message };
+    }
   }
 
   @Delete('remove')
   async removeCurrency(@Body('currency') currency: string) {
-    this.currencyService.removeCurrency(currency);
+    try {
+      this.currencyService.removeCurrency(currency);
 
-    return { message: `${currency} removed successfully` };
+      return { message: `${currency} removed successfully` };
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 
   @Get('')
