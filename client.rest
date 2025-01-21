@@ -2,8 +2,8 @@
 
 
 #### Currency Controller
-# @name Coinverting-Converting
-GET {{baseURL}}/currency/convert?from=DIU&to=USD&amount=1
+# @name Convert
+GET {{baseURL}}/currency/convert?from=SAN&to=USD&amount=1
 Accept: application/json
 
 
@@ -16,7 +16,9 @@ POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "currency": "DIU"
+  "currency": "SAN",
+  "exchangeRate": "2"
+
 }
 
 
@@ -25,5 +27,5 @@ DELETE {{baseURL}}/currency/remove
 Content-Type: application/json
 
 {
-  "currency": "HURB"
+  "currency": "SAN"
 }

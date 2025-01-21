@@ -5,14 +5,19 @@ import axios from 'axios';
 export class CurrencyService {
   private readonly baseApiUrl = 'https://economia.awesomeapi.com.br/json/last';
   private supportedCurrencies = ['USD', 'BRL', 'EUR', 'BTC', 'ETH'];
+  private fictionalExchangeRates: { [key: string]: number } = {};
 
   async convert(from: string, to: string, amount: number) {
+    from = from.toUpperCase();
+    to = to.toUpperCase();
+
     if (
       !this.supportedCurrencies.includes(from) &&
       !this.isFictionalCurrency(from)
     ) {
       throw new Error(`Currency not supported: ${from}`);
     }
+
     if (
       !this.supportedCurrencies.includes(to) &&
       !this.isFictionalCurrency(to)
@@ -28,9 +33,11 @@ export class CurrencyService {
         const response = await axios.get(`${this.baseApiUrl}/${from}-${to}`);
 
         const exchangeRate = response.data[`${from}${to}`]?.ask;
+
         if (!exchangeRate) {
           throw new Error(`Exchange rate not found for ${from} to ${to}`);
         }
+
         const convertedAmount = amount * exchangeRate;
 
         return {
@@ -50,68 +57,75 @@ export class CurrencyService {
   }
 
   private isFictionalCurrency(currency: string): boolean {
-    // Adicione lógica para verificar se a moeda é fictícia
-    return currency.startsWith('HURB'); // Exemplo: todas as moedas que começam com HURB  fictícias
+    return this.fictionalExchangeRates[currency] !== undefined;
   }
 
   private convertFictionalCurrency(from: string, to: string, amount: number) {
-    // Lógica fictícia de conversão (exemplo)
-    const fictionalExchangeRates = {
-      HURB: 0.1, // Exemplo: 1 HURB = 0.1 USD
-    };
-
     if (this.isFictionalCurrency(from) && this.isFictionalCurrency(to)) {
+      const fromRate = this.fictionalExchangeRates[from];
+      const toRate = this.fictionalExchangeRates[to];
+
+      const convertedAmount = (amount * fromRate) / toRate;
+
       return {
         from,
         to,
         amount,
-        convertedAmount: amount,
-        exchangeRate: 1,
+        convertedAmount,
+        exchangeRate: toRate / fromRate,
       };
     } else if (this.isFictionalCurrency(from)) {
-      // Conversão de moeda fictícia para moeda real
-      const exchangeRate = fictionalExchangeRates[from];
-
+      const exchangeRate = this.fictionalExchangeRates[from];
+      const convertedAmount = amount / exchangeRate;
       return {
         from,
         to,
         amount,
-        convertedAmount: amount * exchangeRate,
-        exchangeRate,
+        convertedAmount,
+        exchangeRate: exchangeRate,
       };
     } else if (this.isFictionalCurrency(to)) {
-      // Conversão de moeda real para moeda fictícia
-      const exchangeRate = 1 / fictionalExchangeRates[to];
+      const exchangeRate = this.fictionalExchangeRates[to];
+      const convertedAmount = amount * exchangeRate;
 
       return {
         from,
         to,
         amount,
-        convertedAmount: amount * exchangeRate,
-        exchangeRate,
+        convertedAmount,
+        exchangeRate: 1 / exchangeRate,
       };
     }
   }
 
-  addCurrency(currency: string) {
-    if (this.supportedCurrencies.includes(currency)) {
+  addCurrency(currency: string, exchangeRate: number) {
+    if (
+      this.supportedCurrencies.includes(currency) ||
+      this.fictionalExchangeRates[currency] !== undefined
+    ) {
       throw new Error('Currency already supported');
     }
 
-    this.supportedCurrencies.push(currency);
+    this.fictionalExchangeRates[currency] = exchangeRate;
   }
 
   removeCurrency(currency: string) {
-    if (!this.supportedCurrencies.includes(currency)) {
+    if (
+      !this.supportedCurrencies.includes(currency) &&
+      !this.fictionalExchangeRates[currency]
+    ) {
       throw new Error('Currency not supported');
     }
 
-    this.supportedCurrencies = this.supportedCurrencies.filter(
-      (c) => c !== currency,
-    );
+    delete this.fictionalExchangeRates[currency];
+
+    return `${currency} deleted succesfull`;
   }
 
   getSupportedCurrencies() {
-    return this.supportedCurrencies;
+    return [
+      ...this.supportedCurrencies,
+      ...Object.keys(this.fictionalExchangeRates),
+    ];
   }
 }

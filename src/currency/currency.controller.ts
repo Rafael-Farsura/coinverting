@@ -21,22 +21,22 @@ export class CurrencyController {
   }
 
   @Post('add')
-  async addCurrency(@Body('currency') currency: string) {
+  async addCurrency(@Body() body: { currency: string; exchangeRate: number }) {
     try {
-      await this.currencyService.addCurrency(currency);
+      await this.currencyService.addCurrency(body.currency, body.exchangeRate);
 
-      return { message: `${currency} added successfully` };
+      return { message: `${body.currency} added successfully` };
     } catch (error) {
       return { message: error.message };
     }
   }
 
   @Delete('remove')
-  async removeCurrency(@Body('currency') currency: string) {
+  async removeCurrency(@Body() body: { currency: string }) {
     try {
-      this.currencyService.removeCurrency(currency);
+      this.currencyService.removeCurrency(body.currency);
 
-      return { message: `${currency} removed successfully` };
+      return { message: `${body.currency} removed successfully` };
     } catch (error) {
       return { error: error.message };
     }
