@@ -1,18 +1,16 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
+import { ConvertCurrencyDto } from './dto/convertCurrency.dto';
+import { AddCurrencyDto } from './dto/addCurrency.dto';
 
 @Controller('currency')
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
   @Get('convert')
-  async convert(
-    @Query('from') from: string,
-    @Query('to') to: string,
-    @Query('amount') amount: number,
-  ) {
+  async convert(@Query() query: ConvertCurrencyDto) {
     try {
-      const result = await this.currencyService.convert(from, to, amount);
+      const result = await this.currencyService.convert(query);
 
       return result;
     } catch (error) {
@@ -21,9 +19,9 @@ export class CurrencyController {
   }
 
   @Post('add')
-  async addCurrency(@Body() body: { currency: string; exchangeRate: number }) {
+  async addCurrency(@Body() body: AddCurrencyDto) {
     try {
-      await this.currencyService.addCurrency(body.currency, body.exchangeRate);
+      await this.currencyService.addCurrency(body);
 
       return { message: `${body.currency} added successfully` };
     } catch (error) {

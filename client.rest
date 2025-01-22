@@ -1,23 +1,23 @@
-@baseURL = http://localhost:3000
-
-
 #### Currency Controller
-# @name Convert
-GET {{baseURL}}/currency/convert?from=SAN&to=USD&amount=1
-Accept: application/json
-
+@baseURL = http://localhost:3000
 
 ### @name GetAllSupported
 GET {{baseURL}}/currency/
 Accept: application/application/json
+
+
+# @name Convert
+GET {{baseURL}}/currency/convert?from=USD&to=BTC&amount=1
+Accept: application/json
+
 
 ### @name AddCurrency
 POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "currency": "SAN",
-  "exchangeRate": "2"
+  "currency": "DIU",
+  "exchangeRateToUSD": "2"
 
 }
 
@@ -27,5 +27,5 @@ DELETE {{baseURL}}/currency/remove
 Content-Type: application/json
 
 {
-  "currency": "SAN"
+  "currency": "DIU"
 }

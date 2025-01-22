@@ -9,5 +9,5 @@ export class Currency {
   code: string;
 
   @Column('decimal')
-  exchangeRate: number;
+  exchangeRateToUSD: number;
 }
