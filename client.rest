@@ -7,7 +7,8 @@ Accept: application/application/json
 
 
 # @name Convert
-GET {{baseURL}}/currency/convert?from=USD&to=BTC&amount=1
+###
+GET {{baseURL}}/currency/convert?from=DIU&to=USD&amount=1
 Accept: application/json
 
 
@@ -16,8 +17,9 @@ POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "currency": "DIU",
-  "exchangeRateToUSD": "2"
+  "currency": "GBP",
+  "exchangeRate": 2,
+  "isFictional": false
 
 }
 
@@ -27,5 +29,5 @@ DELETE {{baseURL}}/currency/remove
 Content-Type: application/json
 
 {
-  "currency": "DIU"
+  "currency": "SAN"
 }

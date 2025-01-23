@@ -10,4 +10,7 @@ export class Currency {
 
   @Column('decimal')
   exchangeRateToUSD: number;
+
+  @Column({ default: false })
+  isFictional: boolean;
 }

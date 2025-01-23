@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class AddCurrencyDto {
   @IsNotEmpty()
@@ -9,4 +15,8 @@ export class AddCurrencyDto {
   @IsNumber()
   @IsPositive()
   exchangeRateToUSD: number;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isFictional: boolean;
 }
