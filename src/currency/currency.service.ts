@@ -75,7 +75,6 @@ export class CurrencyService {
 
   private async isFictionalCurrency(currency: string): Promise<boolean> {
     const currencyInUSD = await this.fetchExchangeRateUSD(currency);
-    console.log(currencyInUSD, 'CurrencyInUSD');
 
     if (!currencyInUSD) return true;
 
@@ -113,7 +112,6 @@ export class CurrencyService {
       throw new BadRequestException('Currency already supported');
 
     isFictional = await this.isFictionalCurrency(currency);
-    console.log(isFictional, 'isFictional');
 
     if (!isFictional)
       exchangeRateToUSD = await this.fetchExchangeRateUSD(currency);

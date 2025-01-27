@@ -17,9 +17,9 @@ POST {{baseURL}}/currency/add
 Content-Type: application/json
 
 {
-  "currency": "GBP",
-  "exchangeRate": 2,
-  "isFictional": false
+  "currency": "SANDERS",
+  "exchangeRateToUSD": 2,
+  "isFictional": true
 
 }
 
@@ -29,5 +29,5 @@ DELETE {{baseURL}}/currency/remove
 Content-Type: application/json
 
 {
-  "currency": "SAN"
+  "currency": "DIU"
 }
