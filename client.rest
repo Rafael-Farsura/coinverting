@@ -8,7 +8,7 @@ Accept: application/application/json
 
 # @name Convert
 ###
-GET {{baseURL}}/currency/convert?from=DIU&to=USD&amount=1
+GET {{baseURL}}/currency/convert?from=EUR&to=USD&amount=100
 Accept: application/json
 
 

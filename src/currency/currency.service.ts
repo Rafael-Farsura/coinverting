@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConvertCurrencyDto } from './dto/convertCurrency.dto';
 import { AddCurrencyDto } from './dto/addCurrency.dto';
 
@@ -6,6 +6,8 @@ import axios from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Currency } from './entities/currency.entity';
 import { Repository } from 'typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CurrencyService {
@@ -16,6 +18,8 @@ export class CurrencyService {
   constructor(
     @InjectRepository(Currency)
     private currencyRepository: Repository<Currency>,
+
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async onModuleInit() {
@@ -39,6 +43,11 @@ export class CurrencyService {
 
     if (currency === 'USD') return 1;
 
+    const cacheKey = `currency_usd_rate:${currency}`;
+    const cachedRate = await this.cacheManager.get(cacheKey);
+
+    if (cachedRate) return cachedRate as number;
+
     let currencyEntity: Currency = await this.currencyRepository.findOne({
       where: { code: currency },
     });
@@ -57,6 +66,12 @@ export class CurrencyService {
 
       await this.currencyRepository.save(currencyEntity);
     }
+
+    await this.cacheManager.set(
+      cacheKey,
+      currencyEntity.exchangeRateToUSD,
+      3600,
+    );
 
     return currencyEntity.exchangeRateToUSD;
   }
@@ -84,8 +99,10 @@ export class CurrencyService {
   async convert(convertCurrencyDto: ConvertCurrencyDto) {
     const { from, to, amount } = convertCurrencyDto;
 
-    const currencyFromInUSD = await this.getValueInUSD(from);
-    const currencyToInUSD = await this.getValueInUSD(to);
+    const [currencyFromInUSD, currencyToInUSD] = await Promise.all([
+      this.getValueInUSD(from),
+      this.getValueInUSD(to),
+    ]);
 
     const convertedAmount = (currencyFromInUSD / currencyToInUSD) * amount;
 
@@ -138,12 +155,10 @@ export class CurrencyService {
   }
 
   async getSupportedCurrencies() {
-    const currencies = await this.currencyRepository.find();
-
-    return currencies;
+    return await this.currencyRepository.find();
   }
 
-  async initializeSupportedCurrencies() {
+  private async initializeSupportedCurrencies() {
     for (const currency of this.supportedCurrencies) {
       const existingCurrency = await this.currencyRepository.findOne({
         where: { code: currency },
